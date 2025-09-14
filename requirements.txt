@@ -2,4 +2,5 @@ flask
 shapely
 geopy
 pandas
+gunicorn
 pyproj
