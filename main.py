@@ -96,7 +96,7 @@ def manual_calculate():
     dwellers = int(data.get("dwellers", 1))
     open_space = float(data.get("open_space", 0))
 
-    # --- Fix: Apply alias mapping ---
+    # Apply alias mapping
     if state and state.upper() in STATE_ALIAS:
         state = STATE_ALIAS[state.upper()]
 
@@ -153,13 +153,21 @@ def calculate():
     lat, lng = coords[0]
     city, state = get_location_details(lat, lng)
 
-    # --- Fix: Apply alias mapping ---
-    if state and state.upper() in STATE_ALIAS:
-        state = STATE_ALIAS[state.upper()]
+    # Initialize with default values
+    rainfall = 0
+    groundwater = {'aquifer': 'N/A', 'depth': 'N/A'}
 
-    rainfall = RAIN_DATA.get(state.upper(), 0) if state else 0
-    groundwater = GROUNDWATER_DATA.get(state.upper(), {}).get(city.upper(), {'aquifer': 'N/A', 'depth': 'N/A'})
+    # Safely check for state and city before using them to prevent crashes
+    if state:
+        # Apply alias mapping for state name
+        state_key = STATE_ALIAS.get(state.upper(), state.upper())
+        rainfall = RAIN_DATA.get(state_key, 0)
+        
+        # Only look for groundwater data if a city was also found
+        if city:
+            groundwater = GROUNDWATER_DATA.get(state_key, {}).get(city.upper(), {'aquifer': 'N/A', 'depth': 'N/A'})
 
+    # Calculate potential water harvesting
     water_litres = area_m2 * rainfall * RUNOFF_COEFF / 1000
 
     return jsonify({
