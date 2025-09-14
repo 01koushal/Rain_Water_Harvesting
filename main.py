@@ -3,19 +3,14 @@ import shapely.geometry as geom
 from geopy.geocoders import Nominatim
 import pandas as pd
 from pyproj import Geod
-import os # <-- 1. IMPORT THE OS MODULE
 
 app = Flask(__name__)
-
-# --- Get the absolute path to the directory where this script is located ---
-# This makes file paths reliable whether run locally or on a server.
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Runoff coefficient (average for concrete roofs)
 RUNOFF_COEFF = 0.8
 
 # --- Load State Rainfall Data ---
-def load_state_rainfall(filepath): # The filepath will now be an absolute path
+def load_state_rainfall(filepath="district wise rainfall normal.csv"):
     df = pd.read_csv(filepath)
 
     # Clean column names
@@ -27,7 +22,7 @@ def load_state_rainfall(filepath): # The filepath will now be an absolute path
     return state_rainfall
 
 # --- Load Groundwater Data ---
-def load_groundwater_data(filepath): # The filepath will now be an absolute path
+def load_groundwater_data(filepath="groundwater_data.csv"):
     df = pd.read_csv(filepath)
     df.columns = [col.strip().upper() for col in df.columns]
     
@@ -43,15 +38,9 @@ def load_groundwater_data(filepath): # The filepath will now be an absolute path
         }
     return groundwater_dict
 
-# --- 2. CONSTRUCT ABSOLUTE PATHS TO YOUR DATA FILES ---
-rainfall_csv_path = os.path.join(BASE_DIR, "district wise rainfall normal.csv")
-groundwater_csv_path = os.path.join(BASE_DIR, "groundwater_data.csv")
-
-
-# --- 3. LOAD DATA USING THE NEW, RELIABLE PATHS ---
-RAIN_DATA = load_state_rainfall(rainfall_csv_path)
-GROUNDWATER_DATA = load_groundwater_data(groundwater_csv_path)
-
+# Load once at startup
+RAIN_DATA = load_state_rainfall("district wise rainfall normal.csv")
+GROUNDWATER_DATA = load_groundwater_data("groundwater_data.csv")
 
 # --- Alias for renamed/split states ---
 STATE_ALIAS = {
@@ -88,8 +77,6 @@ def calculate_area_m2(coords):
     area, perimeter = geod.polygon_area_perimeter(lons, lats)
     return abs(area)
 
-# (The rest of your Flask routes remain exactly the same)
-
 @app.route('/map.html')
 def map_page():
     return render_template('map.html')
@@ -109,12 +96,20 @@ def manual_calculate():
     dwellers = int(data.get("dwellers", 1))
     open_space = float(data.get("open_space", 0))
 
+    # Apply alias mapping
     if state and state.upper() in STATE_ALIAS:
         state = STATE_ALIAS[state.upper()]
 
+    # Fetch rainfall
     rainfall = RAIN_DATA.get(state.upper(), 0) if state else 0
+
+    # Fetch groundwater data
     groundwater = GROUNDWATER_DATA.get(state.upper(), {}).get(district.upper(), {'aquifer': 'N/A', 'depth': 'N/A'})
+
+    # Estimate water harvesting (litres/year)
     water_litres = area_m2 * rainfall * coeff / 1000
+
+    # Domestic demand (135 litres/person/day × dwellers × 365 days)
     domestic_demand = dwellers * 135 * 365
     sufficiency_percent = (water_litres / domestic_demand * 100) if domestic_demand else 0
     feasible = "Feasible" if area_m2 >= 20 and rainfall > 200 else "Not Feasible"
@@ -158,16 +153,21 @@ def calculate():
     lat, lng = coords[0]
     city, state = get_location_details(lat, lng)
 
+    # Initialize with default values
     rainfall = 0
     groundwater = {'aquifer': 'N/A', 'depth': 'N/A'}
 
+    # Safely check for state and city before using them to prevent crashes
     if state:
+        # Apply alias mapping for state name
         state_key = STATE_ALIAS.get(state.upper(), state.upper())
         rainfall = RAIN_DATA.get(state_key, 0)
         
+        # Only look for groundwater data if a city was also found
         if city:
             groundwater = GROUNDWATER_DATA.get(state_key, {}).get(city.upper(), {'aquifer': 'N/A', 'depth': 'N/A'})
 
+    # Calculate potential water harvesting
     water_litres = area_m2 * rainfall * RUNOFF_COEFF / 1000
 
     return jsonify({
