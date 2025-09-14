@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rainwater Harvesting Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="/manifest.json">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+  <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="index.html" class="text-2xl font-bold text-green-600 hover:text-green-700 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block align-text-bottom mr-1"><path d="M12 2.69l5.66 5.66-5.66 5.66-5.66-5.66L12 2.69zM12 11.23L6.34 5.57l-4.24 4.24-5.66-5.66L1.4 11.23l4.24 4.24 5.66-5.66z"/></svg>
+        RWH App
+      </a>
+      
+      <div class="hidden md:flex space-x-6 items-center">
+        <a href="calculate.html" class="text-gray-600 hover:text-green-600 transition font-medium">Manual Calculator</a>
+        <a href="map.html" class="text-gray-600 hover:text-green-600 transition font-medium">Map Calculator</a>
+        <a href="report.html" class="text-gray-600 hover:text-green-600 transition font-medium">Report</a>
+        <a href="about.html" class="text-gray-600 hover:text-green-600 transition font-medium">About</a>
+      </div>
+      
+      <div class="md:hidden">
+        <button id="mobile-menu-button" class="text-gray-600 hover:text-green-600 focus:outline-none focus:text-green-600">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <div id="mobile-menu" class="hidden md:hidden">
+      <div class="flex flex-col px-6 py-4 space-y-4">
+        <a href="calculate.html" class="text-gray-600 hover:text-green-600 transition font-medium">Manual Calculator</a>
+        <a href="map.html" class="text-gray-600 hover:text-green-600 transition font-medium">Map Calculator</a>
+        <a href="report.html" class="text-gray-600 hover:text-green-600 transition font-medium">Report</a>
+        <a href="about.html" class="text-gray-600 hover:text-green-600 transition font-medium">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container mx-auto px-6 py-12 flex-grow flex items-center justify-center">
+    <div class="w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden p-8 md:p-12">
+        <div class="flex justify-end mb-6">
+            <select id="language-switcher" class="block w-auto py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm">
+              <option value="en">English</option>
+              <option value="hi">हिन्दी</option>
+              <option value="te">తెలుగు</option>
+            </select>
+        </div>
+        <div class="text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 text-green-600"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="8" x2="16" y1="10" y2="10"/><line x1="8" x2="16" y1="14" y2="14"/><line x1="8" x2="16" y1="18" y2="18"/></svg>
+                <span data-i18n="pageTitle">Rainwater Calculator</span>
+            </h2>
+            <p class="text-gray-500 mb-8" data-i18n="pageDescription">Estimate rooftop harvesting potential with rainfall data</p>
+        </div>
+
+        <form id="manualForm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label for="state" class="block text-sm font-medium text-gray-700" data-i18n="labelState">Select State</label>
+                <select id="state" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" required>
+                  <option value="" data-i18n="optionState">-- Choose State --</option>
+                  <option>Andhra Pradesh</option>
+                  <option>Karnataka</option>
+                  <option>Maharashtra</option>
+                  <option>Delhi</option>
+                  </select>
+              </div>
+              <div>
+                <label for="district" class="block text-sm font-medium text-gray-700" data-i18n="labelDistrict">Enter District</label>
+                <input type="text" id="district" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" data-i18n="placeholderDistrict" placeholder="e.g. Hyderabad" required>
+              </div>
+              <div>
+                <label for="area" class="block text-sm font-medium text-gray-700" data-i18n="labelArea">Rooftop Area</label>
+                <input type="number" id="area" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" data-i18n="placeholderArea" placeholder="e.g. 150" required>
+              </div>
+              <div>
+                <label for="material" class="block text-sm font-medium text-gray-700" data-i18n="labelMaterial">Roof Material</label>
+                <select id="material" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" required>
+                  <option value="0.9" data-i18n="materialConcrete">Concrete</option>
+                  <option value="0.8" data-i18n="materialMetal">Metal Sheet</option>
+                  <option value="0.75" data-i18n="materialTile">Tile Roof</option>
+                  <option value="0.6" data-i18n="materialPaved">Paved Surface</option>
+                  <option value="0.3" data-i18n="materialSoil">Soil / Grass</option>
+                </select>
+              </div>
+              <div>
+                <label for="dwellers" class="block text-sm font-medium text-gray-700" data-i18n="labelDwellers">Number of Dwellers</label>
+                <input type="number" id="dwellers" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" data-i18n="placeholderDwellers" placeholder="e.g. 4" required>
+              </div>
+              <div>
+                <label for="open_space" class="block text-sm font-medium text-gray-700" data-i18n="labelOpenSpace">Open Space</label>
+                <input type="number" id="open_space" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" data-i18n="placeholderOpenSpace" placeholder="e.g. 50">
+              </div>
+            </div>
+
+            <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" data-i18n="buttonCalculate">
+              Calculate Potential
+            </button>
+        </form>
+
+        <div class="relative my-6">
+            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                <div class="w-full border-t border-gray-300"></div>
+            </div>
+            <div class="relative flex justify-center">
+                <span class="px-2 bg-white text-sm text-gray-500" data-i18n="dividerOr">OR</span>
+            </div>
+        </div>
+
+        <div class="grid">
+            <a href="map.html" class="w-full flex items-center justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" data-i18n="buttonMap">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M12 1.5l6 4.5v11.5l-6 4.5-6-4.5V6z"/><circle cx="12" cy="11.5" r="3.5"/></svg>
+                Use Map to Draw Rooftop
+            </a>
+        </div>
+
+        <div id="result" class="mt-6 p-4 bg-green-50 border-l-4 border-green-400 rounded-r-lg hidden"></div>
+
+        <div id="reportBtnContainer" class="hidden mt-6 text-center">
+            <button class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" id="reportBtn" data-i18n="buttonReport">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                Generate Report
+            </button>
+        </div>
+    </div>
+  </main>
+
+<script>
+// Mobile menu toggle script
+document.getElementById('mobile-menu-button').addEventListener('click', function() {
+  const mobileMenu = document.getElementById('mobile-menu');
+  mobileMenu.classList.toggle('hidden');
+});
+
+// Translation data (unchanged)
+const translations = {
+  en: {
+    pageTitle: "Rainwater Calculator",
+    pageDescription: "Estimate rooftop harvesting potential with rainfall data",
+    labelState: "Select State",
+    optionState: "-- Choose State --",
+    labelDistrict: "Enter District",
+    placeholderDistrict: "e.g. Hyderabad",
+    labelArea: "Rooftop Area ($m^2$)",
+    placeholderArea: "e.g. 150",
+    labelMaterial: "Roof Material",
+    materialConcrete: "Concrete",
+    materialMetal: "Metal Sheet",
+    materialTile: "Tile Roof",
+    materialPaved: "Paved Surface",
+    materialSoil: "Soil / Grass",
+    labelDwellers: "Number of Dwellers",
+    placeholderDwellers: "e.g. 4",
+    labelOpenSpace: "Open Space ($m^2$)",
+    placeholderOpenSpace: "e.g. 50",
+    buttonCalculate: "Calculate Potential",
+    dividerOr: "OR",
+    buttonMap: "Use Map to Draw Rooftop",
+    buttonReport: "Generate Report",
+    resultsTitle: "Results",
+    resultState: "State:",
+    resultDistrict: "District:",
+    resultRainfall: "Rainfall:",
+    resultArea: "Rooftop Area:",
+    resultDwellers: "Dwellers:",
+    resultPotential: "Estimated Potential:",
+    resultDemand: "Domestic Demand:",
+    resultSufficiency: "Sufficiency:",
+    resultFeasibility: "Feasibility:",
+    feasibleStatus: {
+      Feasible: "Feasible",
+      "Not Feasible": "Not Feasible"
+    },
+    recom_pit_dims: "2 × 2 × 0.5",
+    recom_trench_dims: "3 × 1 × 1",
+    recom_shaft_dims: "1.5m diameter, 2m depth"
+  },
+  hi: {
+    pageTitle: "वर्षा जल कैलकुलेटर",
+    pageDescription: "वर्षा के आंकड़ों के साथ छत से वर्षा जल संचयन की क्षमता का अनुमान लगाएं",
+    labelState: "राज्य चुनें",
+    optionState: "-- राज्य चुनें --",
+    labelDistrict: "ज़िला दर्ज करें",
+    placeholderDistrict: "उदाहरण: हैदराबाद",
+    labelArea: "छत का क्षेत्रफल ($m^2$)",
+    placeholderArea: "उदाहरण: 150",
+    labelMaterial: "छत की सामग्री",
+    materialConcrete: "कंक्रीट",
+    materialMetal: "धातु की चादर",
+    materialTile: "टाइल वाली छत",
+    materialPaved: "पक्की सतह",
+    materialSoil: "मिट्टी / घास",
+    labelDwellers: "रहने वालों की संख्या",
+    placeholderDwellers: "उदाहरण: 4",
+    labelOpenSpace: "खुली जगह ($m^2$)",
+    placeholderOpenSpace: "उदाहरण: 50",
+    buttonCalculate: "क्षमता की गणना करें",
+    dividerOr: "या",
+    buttonMap: "छत बनाने के लिए नक्शे का उपयोग करें",
+    buttonReport: "रिपोर्ट बनाएं",
+    resultsTitle: "परिणाम",
+    resultState: "राज्य:",
+    resultDistrict: "ज़िला:",
+    resultRainfall: "वर्षा:",
+    resultArea: "छत का क्षेत्रफल:",
+    resultDwellers: "रहने वाले:",
+    resultPotential: "अनुमानित क्षमता:",
+    resultDemand: "घरेलू मांग:",
+    resultSufficiency: "पर्याप्तता:",
+    resultFeasibility: "व्यवहार्यता:",
+    feasibleStatus: {
+      Feasible: "व्यवहार्य",
+      "Not Feasible": "व्यवहार्य नहीं"
+    },
+    recom_pit_dims: "2 × 2 × 0.5",
+    recom_trench_dims: "3 × 1 × 1",
+    recom_shaft_dims: "1.5मी व्यास, 2मी गहराई"
+  },
+  te: {
+    pageTitle: "వర్షపు నీటి కాలిక్యులేటర్",
+    pageDescription: "వర్షపాతం డేటాతో పైకప్పుపై వర్షపు నీటిని సేకరించగల సామర్థ్యాన్ని అంచనా వేయండి",
+    labelState: "రాష్ట్రం ఎంచుకోండి",
+    optionState: "-- రాష్ట్రాన్ని ఎంచుకోండి --",
+    labelDistrict: "జిల్లాను నమోదు చేయండి",
+    placeholderDistrict: "ఉదాహరణ: హైదరాబాద్",
+    labelArea: "పైకప్పు ప్రాంతం ($m^2$)",
+    placeholderArea: "ఉదాహరణ: 150",
+    labelMaterial: "పైకప్పు పదార్థం",
+    materialConcrete: "కాంక్రీటు",
+    materialMetal: "లోహపు షీట్",
+    materialTile: "టైల్ రూఫ్",
+    materialPaved: "పక్కా చేయబడిన ఉపరితలం",
+    materialSoil: "నేల / గడ్డి",
+    labelDwellers: "నివాసుల సంఖ్య",
+    placeholderDwellers: "ఉదాహరణ: 4",
+    labelOpenSpace: "ఖాళీ స్థలం ($m^2$)",
+    placeholderOpenSpace: "ఉదాహరణ: 50",
+    buttonCalculate: "సామర్థ్యాన్ని లెక్కించండి",
+    dividerOr: "లేదా",
+    buttonMap: "పైకప్పును గీయడానికి మ్యాప్‌ను ఉపయోగించండి",
+    buttonReport: "నివేదికను రూపొందించండి",
+    resultsTitle: "ఫలితాలు",
+    resultState: "రాష్ట్రం:",
+    resultDistrict: "జిల్లా:",
+    resultRainfall: "వర్షపాతం:",
+    resultArea: "పైకప్పు ప్రాంతం:",
+    resultDwellers: "నివాసులు:",
+    resultPotential: "అంచనా వేసిన సామర్థ్యం:",
+    resultDemand: "గృహ అవసరం:",
+    resultSufficiency: "సరిపడటం:",
+    resultFeasibility: "సాధ్యత:",
+    feasibleStatus: {
+      Feasible: "సాధ్యం",
+      "Not Feasible": "సాధ్యం కాదు"
+    },
+    recom_pit_dims: "2 × 2 × 0.5",
+    recom_trench_dims: "3 × 1 × 1",
+    recom_shaft_dims: "1.5 మీటర్ల వ్యాసం, 2 మీటర్ల లోతు"
+  }
+};
+
+// Function to set language (unchanged)
+function setLanguage(lang) {
+  const elements = document.querySelectorAll('[data-i18n]');
+  elements.forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (translations[lang] && translations[lang][key]) {
+      // For buttons, only change the text node, not the SVG
+      if(el.tagName === 'BUTTON' || el.tagName === 'A') {
+          let textNode = Array.from(el.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+          if (textNode) {
+              textNode.textContent = ` ${translations[lang][key]} `;
+          }
+      } else {
+          el.textContent = translations[lang][key];
+      }
+    }
+  });
+
+  // Handle special cases like placeholders (unchanged)
+  document.getElementById('district').placeholder = translations[lang].placeholderDistrict;
+  document.getElementById('area').placeholder = translations[lang].placeholderArea;
+  document.getElementById('dwellers').placeholder = translations[lang].placeholderDwellers;
+  document.getElementById('open_space').placeholder = translations[lang].placeholderOpenSpace;
+}
+
+// Initial language setting (unchanged)
+const defaultLang = "en";
+setLanguage(defaultLang);
+document.getElementById('language-switcher').value = defaultLang;
+
+// Language switcher event listener (unchanged)
+document.getElementById('language-switcher').addEventListener('change', (e) => {
+  setLanguage(e.target.value);
+});
+
+
+// Function to generate dynamic AR recommendations (unchanged)
+function getRecommendations(waterLitres, area_m2, lang) {
+    const costPerCubicMeter = 7500;
+    let recommendation = {
+        pit: { volume: 0, dims: "-", cost: 0 },
+        trench: { volume: 0, dims: "-", cost: 0 },
+        shaft: { volume: 0, dims: "-", cost: 0 }
+    };
+    const requiredVolume_m3 = (waterLitres * 0.05) / 1000;
+    if (area_m2 < 100) {
+        recommendation.pit.volume = requiredVolume_m3 > 0.5 ? requiredVolume_m3 : 0.5;
+        recommendation.pit.dims = translations[lang].recom_pit_dims;
+        recommendation.pit.cost = recommendation.pit.volume * costPerCubicMeter;
+    } else if (area_m2 >= 100 && area_m2 < 500) {
+        recommendation.trench.volume = requiredVolume_m3 > 1 ? requiredVolume_m3 : 1;
+        recommendation.trench.dims = translations[lang].recom_trench_dims;
+        recommendation.trench.cost = recommendation.trench.volume * costPerCubicMeter;
+    } else {
+        recommendation.shaft.volume = requiredVolume_m3 > 2 ? requiredVolume_m3 : 2;
+        recommendation.shaft.dims = translations[lang].recom_shaft_dims;
+        recommendation.shaft.cost = recommendation.shaft.volume * costPerCubicMeter;
+    }
+    recommendation.pit.volume = parseFloat(recommendation.pit.volume.toFixed(2));
+    recommendation.trench.volume = parseFloat(recommendation.trench.volume.toFixed(2));
+    recommendation.shaft.volume = parseFloat(recommendation.shaft.volume.toFixed(2));
+    recommendation.pit.cost = Math.round(recommendation.pit.cost);
+    recommendation.trench.cost = Math.round(recommendation.trench.cost);
+    recommendation.shaft.cost = Math.round(recommendation.shaft.cost);
+    return recommendation;
+}
+
+
+document.getElementById("manualForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const lang = document.getElementById('language-switcher').value;
+
+  const state = document.getElementById("state").value;
+  const district = document.getElementById("district").value;
+  const area = parseFloat(document.getElementById("area").value);
+  const coeff = parseFloat(document.getElementById("material").value);
+  const dwellers = parseInt(document.getElementById("dwellers").value);
+  const open_space = parseFloat(document.getElementById("open_space").value || 0);
+
+  fetch("/manual-calculate", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ 
+      state, district, area_m2: area, coefficient: coeff, dwellers, open_space
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    // Show and update results div with Tailwind-styled HTML
+    const resultDiv = document.getElementById("result");
+    resultDiv.classList.remove("hidden");
+    const lang = document.getElementById('language-switcher').value;
+    const translatedResults = translations[lang];
+    resultDiv.innerHTML = `
+      <h5 class="mb-3 text-lg font-semibold text-gray-800 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-5 w-5 text-green-600"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+        ${translatedResults.resultsTitle}
+      </h5>
+      <div class="space-y-1 text-sm text-gray-600">
+        <p><strong class="font-medium text-gray-900">${translatedResults.resultState}</strong> ${data.state}</p>
+        <p><strong class="font-medium text-gray-900">${translatedResults.resultDistrict}</strong> ${data.district}</p>
+        <p><strong class="font-medium text-gray-900">${translatedResults.resultRainfall}</strong> ${data.rainfall_mm_per_year} mm/year</p>
+        <p><strong class="font-medium text-gray-900">${translatedResults.resultArea}</strong> ${data.area_m2} m²</p>
+        <p><strong class="font-medium text-gray-900">${translatedResults.resultDwellers}</strong> ${data.dwellers}</p>
+        <p><strong class="font-medium text-gray-900">${translatedResults.resultPotential}</strong> ${data.water_litres} litres/year</p>
+        <p><strong class="font-medium text-gray-900">${translatedResults.resultDemand}</strong> ${data.domestic_demand} litres/year</p>
+        <p><strong class="font-medium text-gray-900">${translatedResults.resultSufficiency}</strong> ${data.sufficiency_percent}% of demand</p>
+        <p><strong class="font-medium text-gray-900">${translatedResults.resultFeasibility}</strong> <span class="font-bold ${data.feasible === "Feasible" ? "text-green-600" : "text-red-600"}">
+          ${translatedResults.feasibleStatus[data.feasible]}
+        </span></p>
+      </div>
+    `;
+
+    // Generate dynamic AR recommendations (unchanged)
+    const arRecommendations = getRecommendations(data.water_litres, data.area_m2, lang);
+    
+    // Save to localStorage with dynamic recommendations (unchanged)
+    localStorage.setItem("rwhReport", JSON.stringify({
+      ...data,
+      ar: arRecommendations
+    }));
+
+    // Show report button
+    document.getElementById("reportBtnContainer").classList.remove("hidden");
+    document.getElementById("reportBtn").onclick = function() {
+      window.location.href = "report.html";
+    };
+  });
+});
+
+// PWA Service Worker script (unchanged)
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          console.log('Service Worker registered! Scope:', registration.scope);
+        })
+        .catch(err => {
+          console.log('Service Worker registration failed:', err);
+        });
+    });
+}
+</script>
+<script src="https://cdn.botpress.cloud/webchat/v3.2/inject.js" defer></script>
+<script src="https://files.bpcontent.cloud/2025/09/13/17/20250913170131-377CJBW7.js" defer></script>
+</body>
+</html>

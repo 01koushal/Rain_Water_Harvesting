@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rooftop Area Calculator</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
+  
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <link rel="manifest" href="/manifest.json">
+
+  <style>
+    #map { height: 500px; }
+    body { font-family: Arial, sans-serif; }
+  </style>
+</head>
+<body>
+  <h2>Draw Your Rooftop on Map</h2>
+  <div id="map"></div>
+  <p id="result"></p>
+
+  <script>
+    // Initialize map with a default view
+    var map = L.map('map').setView([20.5937, 78.9629], 5); // India centered
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+    }).addTo(map);
+
+    // Add search control
+    L.Control.geocoder({
+      defaultMarkGeocode: true
+    }).addTo(map);
+
+    // Feature group for drawn items
+    var drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+
+    // Draw control
+    var drawControl = new L.Control.Draw({
+      draw: {
+        polygon: true,
+        marker: false,
+        circle: false,
+        rectangle: false,
+        polyline: false,
+      },
+      edit: {
+        featureGroup: drawnItems
+      }
+    });
+    map.addControl(drawControl);
+
+    // Event: polygon drawn
+    map.on(L.Draw.Event.CREATED, function (event) {
+      var layer = event.layer;
+      drawnItems.addLayer(layer);
+
+      var coords = layer.getLatLngs()[0].map(p => [p.lat, p.lng]);
+
+      fetch("/calculate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ coordinates: coords })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("result").innerText =
+          "Area: " + data.area_m2 + " m², Harvest Potential: " + data.water_litres + " litres/year";
+      });
+    });
+  </script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          console.log('Service Worker registered! Scope:', registration.scope);
+        })
+        .catch(err => {
+          console.log('Service Worker registration failed:', err);
+        });
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rainwater Harvesting - About Us</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+  <!-- Navigation Bar -->
+  <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="index.html" class="text-2xl font-bold text-green-600 hover:text-green-700 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block align-text-bottom mr-1"><path d="M12 2.69l5.66 5.66-5.66 5.66-5.66-5.66L12 2.69zM12 11.23L6.34 5.57l-4.24 4.24-5.66-5.66L1.4 11.23l4.24 4.24 5.66-5.66z"/></svg>
+        RWH App
+      </a>
+      <div class="hidden md:flex space-x-6 items-center">
+        <a href="calculate.html" class="text-gray-600 hover:text-green-600 transition font-medium">Manual Calculator</a>
+        <a href="map.html" class="text-gray-600 hover:text-green-600 transition font-medium">Map Calculator</a>
+        <a href="report.html" class="text-gray-600 hover:text-green-600 transition font-medium">Report</a>
+        <a href="about.html" class="text-gray-600 hover:text-green-600 transition font-medium">About</a>
+      </div>
+      <div class="md:hidden">
+        <button id="mobile-menu-button" class="text-gray-600 hover:text-green-600 focus:outline-none focus:text-green-600">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden">
+      <div class="flex flex-col px-6 py-4 space-y-4">
+        <a href="calculate.html" class="text-gray-600 hover:text-green-600 transition font-medium">Manual Calculator</a>
+        <a href="map.html" class="text-gray-600 hover:text-green-600 transition font-medium">Map Calculator</a>
+        <a href="report.html" class="text-gray-600 hover:text-green-600 transition font-medium">Report</a>
+        <a href="about.html" class="text-gray-600 hover:text-green-600 transition font-medium">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Container -->
+  <main class="container mx-auto px-6 py-12 flex-grow">
+    <div class="w-full max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl p-8 md:p-12">
+
+      <!-- Page Header -->
+      <div class="text-center mb-10">
+        <h1 class="text-4xl lg:text-5xl font-extrabold text-green-700">About Our Mission</h1>
+        <p class="mt-4 text-lg text-gray-600">Empowering communities with the data and tools for a sustainable water future.</p>
+      </div>
+
+      <!-- Content Grid -->
+      <div class="space-y-12">
+
+        <!-- How It Works Section -->
+        <div class="p-6 bg-gray-50 rounded-xl border">
+          <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500 mr-3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            How It Works
+          </h2>
+          <p class="text-gray-600">
+            This application provides powerful tools to estimate your rainwater harvesting potential. By combining your specific location details with comprehensive environmental data, we deliver a personalized report to guide your water conservation efforts. Whether you enter your rooftop details manually or draw your property on our interactive map, our goal is to give you an accurate and actionable assessment.
+          </p>
+        </div>
+
+        <!-- Data Sources Section -->
+        <div class="p-6 bg-gray-50 rounded-xl border">
+          <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500 mr-3"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            Our Data Sources
+          </h2>
+          <p class="text-gray-600 mb-4">
+            Accuracy is at the core of our calculations. We leverage reliable, publicly available datasets for India to ensure our estimates are as precise as possible:
+          </p>
+          <ul class="space-y-2 list-disc list-inside text-gray-700">
+            <li><strong>Rainfall Data:</strong> We utilize district-wise annual rainfall normals from government sources (`district wise rainfall normal.csv`) to determine the average precipitation in your specific area.</li>
+            <li><strong>Groundwater Data:</strong> Information on aquifer types and typical groundwater depth is sourced from hydrogeological surveys (`groundwater_data.csv`), helping to assess the feasibility of artificial recharge.</li>
+          </ul>
+        </div>
+
+        <!-- Why RWH Section -->
+        <div>
+          <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Why Rainwater Harvesting?</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+            <div class="p-6 bg-green-50 rounded-xl border border-green-200">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-green-600 mb-3"><path d="M21.2 14.8c.2.4.2.9 0 1.3l-1.6 2.8c-.2.4-.6.6-1 .6H5.4c-.4 0-.8-.2-1-.6l-1.6-2.8c-.2-.4-.2-.9 0-1.3l1.6-2.8c.2-.4.6-.6 1-.6h11.2c.4 0 .8.2 1 .6l1.6 2.8z"/><path d="M19.6 12L12 2 4.4 12"/></svg>
+              <h3 class="text-lg font-semibold text-gray-800">Conserve Water</h3>
+              <p class="text-sm text-gray-600 mt-1">Reduce your reliance on municipal or groundwater sources, saving a precious natural resource.</p>
+            </div>
+            <div class="p-6 bg-blue-50 rounded-xl border border-blue-200">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-blue-600 mb-3"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M12 12a10 10 0 0 1-10 10V12h10z"/></svg>
+              <h3 class="text-lg font-semibold text-gray-800">Recharge Groundwater</h3>
+              <p class="text-sm text-gray-600 mt-1">Directly replenish local aquifers, combating declining water tables and ensuring long-term water security.</p>
+            </div>
+            <div class="p-6 bg-yellow-50 rounded-xl border border-yellow-200">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-yellow-600 mb-3"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <h3 class="text-lg font-semibold text-gray-800">Save Money</h3>
+              <p class="text-sm text-gray-600 mt-1">Lower your water bills over time by using natural, free rainwater for non-potable needs like gardening and cleaning.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+<script>
+// Mobile menu toggle script
+document.getElementById('mobile-menu-button').addEventListener('click', function() {
+  document.getElementById('mobile-menu').classList.toggle('hidden');
+});
+
+// PWA Service Worker script
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          console.log('Service Worker registered! Scope:', registration.scope);
+        })
+        .catch(err => {
+          console.log('Service Worker registration failed:', err);
+        });
+    });
+}
+</script>
+
+</body>
+</html>

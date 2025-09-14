@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rainwater Harvesting - Report</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="/manifest.json">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    @media print {
+      body {
+        background-color: #fff;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-container {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+  <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm no-print">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="index.html" class="text-2xl font-bold text-green-600 hover:text-green-700 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block align-text-bottom mr-1"><path d="M12 2.69l5.66 5.66-5.66 5.66-5.66-5.66L12 2.69zM12 11.23L6.34 5.57l-4.24 4.24-5.66-5.66L1.4 11.23l4.24 4.24 5.66-5.66z"/></svg>
+        RWH App
+      </a>
+      <div class="hidden md:flex space-x-6 items-center">
+        <a href="calculate.html" class="text-gray-600 hover:text-green-600 transition font-medium">Manual Calculator</a>
+        <a href="map.html" class="text-gray-600 hover:text-green-600 transition font-medium">Map Calculator</a>
+        <a href="report.html" class="text-gray-600 hover:text-green-600 transition font-medium">Report</a>
+        <a href="about.html" class="text-gray-600 hover:text-green-600 transition font-medium">About</a>
+      </div>
+      <div class="md:hidden">
+        <button id="mobile-menu-button" class="text-gray-600 hover:text-green-600 focus:outline-none focus:text-green-600">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden">
+      <div class="flex flex-col px-6 py-4 space-y-4">
+        <a href="calculate.html" class="text-gray-600 hover:text-green-600 transition font-medium">Manual Calculator</a>
+        <a href="map.html" class="text-gray-600 hover:text-green-600 transition font-medium">Map Calculator</a>
+        <a href="report.html" class="text-gray-600 hover:text-green-600 transition font-medium">Report</a>
+        <a href="about.html" class="text-gray-600 hover:text-green-600 transition font-medium">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container mx-auto px-6 py-12 flex-grow">
+    <div id="report-card" class="w-full max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl p-8 md:p-12 print-container">
+      
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 border-b pb-6 border-gray-200">
+        <div class="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600 mr-3"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+          <h2 class="text-3xl font-bold text-gray-800" data-i18n="reportTitle">Rainwater Harvesting Report</h2>
+        </div>
+        <div class="flex items-center mt-4 sm:mt-0 no-print">
+            <select id="language-switcher" class="form-select w-auto py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm mr-4">
+              <option value="en">English</option>
+              <option value="hi">हिन्दी</option>
+              <option value="te">తెలుగు</option>
+            </select>
+            <button id="downloadReport" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span data-i18n="downloadReport">Download PDF</span>
+            </button>
+        </div>
+      </div>
+
+      <div id="report-content">
+        <div class="text-center text-gray-500"><p>Loading report data...</p></div>
+      </div>
+    </div>
+  </main>
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+// Mobile menu toggle script
+document.getElementById('mobile-menu-button').addEventListener('click', function() {
+  document.getElementById('mobile-menu').classList.toggle('hidden');
+});
+
+// Translation Data
+const translations = {
+  en: { reportTitle: "Rainwater Harvesting Report", locationDetails: "Location Details", potentialTitle: "Rainwater Harvesting Potential", recomTitle: "Artificial Recharge Recommendations", cbaTitle: "Cost-Benefit Analysis", cbaInitialCost: "Initial Investment Cost:", cbaValue10: "Value of Harvested Water (10 years):", cbaValue20: "Value of Harvested Water (20 years):", cbaPayback: "Estimated Payback Period:", cbaYears: "years", arStructure: "Structure Type", arVolume: "Recommended Volume (m³)", arDims: "Approx. Dimensions", arCost: "Estimated Cost (₹)", arPit: "Recharge Pit", arTrench: "Trench", arShaft: "Recharge Shaft", downloadReport: "Download PDF", resultState: "State:", resultDistrict: "District:", resultRainfall: "Annual Rainfall:", resultArea: "Rooftop Area:", resultDwellers: "Number of Dwellers:", resultPotential: "Estimated Harvestable Water:", resultDemand: "Domestic Demand:", resultSufficiency: "Sufficiency:", resultFeasibility: "Feasibility:", feasibleStatus: { Feasible: "Feasible", "Not Feasible": "Not Feasible" }, guideTitle: "A Guide to Your Rainwater Harvesting System", useTitle: "How to Use Harvested Water", useGroundwater: "Groundwater Recharge: The most impactful use, directly replenishing local aquifers.", useGardening: "Gardening and Landscaping: Rainwater is excellent for plants and lawns as it's free of chlorine.", useCleaning: "Toilet Flushing and Cleaning: For flushing toilets and washing patios or vehicles.", impactTitle: "Your Environmental Impact", impactConservation: "Water Conservation: Reducing reliance on municipal and groundwater sources.", impactFlood: "Flood Prevention: Reducing storm runoff and localized flooding.", impactAquifer: "Aquifer Replenishment: Directly restoring the water table.", systemTitle: "Your Recommended System: Artificial Recharge", systemDescription: "An Artificial Recharge System is the best fit. Instead of storing water above ground, this system channels rainwater into the soil to replenish groundwater, ensuring long-term sustainability." },
+  hi: { reportTitle: "वर्षा जल संचयन रिपोर्ट", locationDetails: "स्थान विवरण", potentialTitle: "वर्षा जल संचयन की क्षमता", recomTitle: "कृत्रिम पुनर्भरण की सिफारिशें", cbaTitle: "लागत-लाभ विश्लेषण", cbaInitialCost: "प्रारंभिक निवेश लागत:", cbaValue10: "संचयित जल का मूल्य (10 वर्ष):", cbaValue20: "संचयित जल का मूल्य (20 वर्ष):", cbaPayback: "अनुमानित लागत वापसी अवधि:", cbaYears: "वर्ष", arStructure: "संरचना का प्रकार", arVolume: "अनुशंसित मात्रा (m³)", arDims: "लगभग आयाम", arCost: "अनुमानित लागत (₹)", arPit: "रिचार्ज पिट", arTrench: "रिचार्ज खाई", arShaft: "रिचार्ज शाफ़्ट", downloadReport: "पीडीएफ डाउनलोड करें", resultState: "राज्य:", resultDistrict: "ज़िला:", resultRainfall: "वार्षिक वर्षा:", resultArea: "छत का क्षेत्रफल:", resultDwellers: "रहने वालों की संख्या:", resultPotential: "अनुमानित संचयन योग्य पानी:", resultDemand: "घरेलू मांग:", resultSufficiency: "पर्याप्तता:", resultFeasibility: "व्यवहार्यता:", feasibleStatus: { Feasible: "व्यवहार्य", "Not Feasible": "व्यवहार्य नहीं" }, guideTitle: "आपकी वर्षा जल संचयन प्रणाली के लिए एक मार्गदर्शिका", useTitle: "संचयित पानी का उपयोग कैसे करें", useGroundwater: "भूजल पुनर्भरण: सबसे प्रभावशाली उपयोग, सीधे स्थानीय जलभृतों को भरना।", useGardening: "बागवानी और भूनिर्माण: वर्षा जल पौधों और लॉन के लिए उत्कृष्ट है क्योंकि यह क्लोरीन से मुक्त है।", useCleaning: "टॉयलेट फ्लशिंग और सफाई: टॉयलेट फ्लश करने और आँगन या वाहनों को धोने के लिए।", impactTitle: "आपका पर्यावरणीय प्रभाव", impactConservation: "जल संरक्षण: नगरपालिका और भूजल स्रोतों पर निर्भरता कम करना।", impactFlood: "बाढ़ की रोकथाम: तूफान के बहाव और स्थानीय बाढ़ को कम करना।", impactAquifer: "जलभृत पुनर्भरण: सीधे भूजल स्तर को बहाल करना।", systemTitle: "आपकी अनुशंसित प्रणाली: कृत्रिम पुनर्भरण", systemDescription: "एक कृत्रिम पुनर्भरण प्रणाली सबसे उपयुक्त है। पानी को जमीन के ऊपर संग्रहीत करने के बजाय, यह प्रणाली भूजल को फिर से भरने के लिए वर्षा जल को मिट्टी में पहुंचाती है, जो दीर्घकालिक स्थिरता सुनिश्चित करती है।" },
+  te: { reportTitle: "వర్షపు నీటి సేకరణ నివేదిక", locationDetails: "స్థలం వివరాలు", potentialTitle: "వర్షపు నీటి సేకరణ సామర్థ్యం", recomTitle: "కృత్రిమ రీఛార్జ్ సిఫార్సులు", cbaTitle: "ఖర్చు-ప్రయోజన విశ్లేషణ", cbaInitialCost: "ప్రారంభ పెట్టుబడి ఖర్చు:", cbaValue10: "సేకరించిన నీటి విలువ (10 సంవత్సరాలు):", cbaValue20: "సేకరించిన నీటి విలువ (20 సంవత్సరాలు):", cbaPayback: "అంచనా వేసిన తిరిగి చెల్లించే కాలం:", cbaYears: "సంవత్సరాలు", arStructure: "నిర్మాణం రకం", arVolume: "సిఫార్సు చేయబడిన పరిమాణం (m³)", arDims: "సుమారు కొలతలు", arCost: "అంచనా వ్యయం (₹)", arPit: "రీఛార్జ్ పిట్", arTrench: "ట్రెంచ్", arShaft: "రీఛార్జ్ షాఫ్ట్", downloadReport: "PDF నివేదికను డౌన్‌లోడ్ చేయండి", resultState: "రాష్ట్రం:", resultDistrict: "జిల్లా:", resultRainfall: "వార్షిక వర్షపాతం:", resultArea: "పైకప్పు ప్రాంతం:", resultDwellers: "నివాసుల సంఖ్య:", resultPotential: "అంచనా వేసిన సేకరణ సాధ్యమైన నీరు:", resultDemand: "గృహ అవసరం:", resultSufficiency: "సరిపడటం:", resultFeasibility: "సాధ్యత:", feasibleStatus: { Feasible: "సాధ్యం", "Not Feasible": "సాధ్యం కాదు" }, guideTitle: "మీ వర్షపు నీటి సేకరణ వ్యవస్థకు ఒక మార్గదర్శిని", useTitle: "సేకరించిన నీటిని ఎలా ఉపయోగించాలి", useGroundwater: "భూగర్భ జల రీఛార్జ్: అత్యంత ప్రభావవంతమైన ఉపయోగం, స్థానిక జలధరాలను నేరుగా నింపడం.", useGardening: "తోటపని: వర్షపు నీరు క్లోరిన్ లేకుండా ఉంటుంది కాబట్టి మొక్కలు మరియు పచ్చిక బయళ్ళకు అద్భుతమైనది.", useCleaning: "టాయిలెట్ ఫ్లషింగ్ మరియు శుభ్రపరచడం: టాయిలెట్ ఫ్లష్ చేయడానికి మరియు వాకిలి లేదా వాహనాలను కడగడానికి.", impactTitle: "మీ పర్యావరణ ప్రభావం", impactConservation: "నీటి సంరక్షణ: మునిసిపల్ మరియు భూగర్భ జల వనరులపై ఆధారపడటాన్ని తగ్గించడం.", impactFlood: "వరద నివారణ: తుఫాను ప్రవాహం మరియు స్థానిక వరదలను తగ్గించడం.", impactAquifer: "జలధర రీఛార్జ్: భూగర్భ జల స్థాయిని నేరుగా పునరుద్ధరించడం.", systemTitle: "మీ సిఫార్సు చేయబడిన వ్యవస్థ: కృత్రిమ రీఛార్జ్", systemDescription: "ఒక కృత్రిమ రీఛార్జ్ వ్యవస్థ ఉత్తమంగా సరిపోతుంది. భూమి పైన నీటిని నిల్వ చేయడానికి బదులుగా, ఈ వ్యవస్థ భూగర్భ జలాలను నింపడానికి వర్షపు నీటిని నేల లోపలికి పంపుతుంది, ఇది దీర్ఘకాలిక సుస్థిరతను నిర్ధారిస్తుంది." }
+};
+
+// --- Language Functions ---
+function setLanguage(lang) {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (translations[lang] && translations[lang][key]) {
+      el.innerHTML = translations[lang][key];
+    }
+  });
+  // Re-render report with new language
+  renderReport(lang);
+}
+
+const langSwitcher = document.getElementById('language-switcher');
+const savedLang = localStorage.getItem("app_language") || "en";
+langSwitcher.value = savedLang;
+langSwitcher.addEventListener('change', (e) => {
+  const newLang = e.target.value;
+  localStorage.setItem("app_language", newLang);
+  setLanguage(newLang);
+});
+
+// --- PDF Download Function ---
+document.getElementById("downloadReport").addEventListener("click", () => {
+  const { jsPDF } = window.jspdf;
+  const content = document.getElementById("report-card");
+  
+  html2canvas(content, { scale: 2, windowWidth: content.scrollWidth, windowHeight: content.scrollHeight }).then(canvas => {
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+    const ratio = canvasWidth / canvasHeight;
+    const imgWidth = pdfWidth;
+    const imgHeight = imgWidth / ratio;
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pdfHeight;
+
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pdfHeight;
+    }
+    pdf.save("Rainwater_Harvesting_Report.pdf");
+  });
+});
+
+// --- Report Rendering Function ---
+function renderReport(lang) {
+  const reportContent = document.getElementById('report-content');
+  const reportData = JSON.parse(localStorage.getItem('rwhReport'));
+
+  if (!reportData || !reportData.state) {
+    reportContent.innerHTML = `<div class="text-center p-8 bg-yellow-50 border border-yellow-200 rounded-lg"><h3 class="text-xl font-semibold text-yellow-800">No Report Data Found</h3><p class="text-yellow-700 mt-2">Please go to the calculator page and generate a report first.</p><a href="calculate.html" class="mt-4 inline-block px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700">Go to Calculator</a></div>`;
+    return;
+  }
+  
+  // Cost-Benefit Analysis Calculations
+  const waterValuePerLitre = 10; // Assuming average cost of ₹0.05 per litre
+  const activeRechargeCost = reportData.ar.pit.cost || reportData.ar.trench.cost || reportData.ar.shaft.cost || 0;
+  const annualWaterValue = reportData.water_litres * waterValuePerLitre;
+  const valueOver10Years = annualWaterValue * 10;
+  const valueOver20Years = annualWaterValue * 20;
+  const paybackPeriod = activeRechargeCost > 0 && annualWaterValue > 0 ? (activeRechargeCost / annualWaterValue).toFixed(1) : "N/A";
+  
+  const T = translations[lang];
+
+  reportContent.innerHTML = `
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="space-y-6">
+        <div class="p-4 bg-gray-50/70 rounded-xl border">
+          <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-3" data-i18n="locationDetails">${T.locationDetails}</h3>
+          <div class="space-y-2 text-sm text-gray-600">
+            <p><strong data-i18n="resultState">${T.resultState}</strong> <span class="float-right font-medium text-gray-800">${reportData.state}</span></p>
+            <p><strong data-i18n="resultDistrict">${T.resultDistrict}</strong> <span class="float-right font-medium text-gray-800">${reportData.district}</span></p>
+            <p><strong data-i18n="resultArea">${T.resultArea}</strong> <span class="float-right font-medium text-gray-800">${reportData.area_m2} m²</span></p>
+            <p><strong data-i18n="resultDwellers">${T.resultDwellers}</strong> <span class="float-right font-medium text-gray-800">${reportData.dwellers}</span></p>
+          </div>
+        </div>
+        <div class="p-4 bg-gray-50/70 rounded-xl border">
+          <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-3" data-i18n="potentialTitle">${T.potentialTitle}</h3>
+          <div class="space-y-2 text-sm text-gray-600">
+            <p><strong data-i18n="resultRainfall">${T.resultRainfall}</strong> <span class="float-right font-medium text-gray-800">${reportData.rainfall_mm_per_year} mm/year</span></p>
+            <p><strong data-i18n="resultPotential">${T.resultPotential}</strong> <span class="float-right font-bold text-green-600 text-base">${reportData.water_litres.toLocaleString('en-IN')} Litres/year</span></p>
+            <p><strong data-i18n="resultDemand">${T.resultDemand}</strong> <span class="float-right font-medium text-gray-800">${reportData.domestic_demand.toLocaleString('en-IN')} Litres/year</span></p>
+            <p><strong data-i18n="resultSufficiency">${T.resultSufficiency}</strong> <span class="float-right font-bold text-blue-600 text-base">${reportData.sufficiency_percent}% of demand</span></p>
+            <p><strong data-i18n="resultFeasibility">${T.resultFeasibility}</strong> <span class="float-right font-bold ${reportData.feasible === 'Feasible' ? 'text-green-600' : 'text-red-600'}">${T.feasibleStatus[reportData.feasible]}</span></p>
+          </div>
+        </div>
+      </div>
+      <div class="space-y-6">
+        <div class="p-4 bg-gray-50/70 rounded-xl border">
+          <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-3" data-i18n="cbaTitle">${T.cbaTitle}</h3>
+          <div class="space-y-2 text-sm text-gray-600">
+            <p><strong data-i18n="cbaInitialCost">${T.cbaInitialCost}</strong> <span class="float-right font-medium text-gray-800">₹ ${activeRechargeCost.toLocaleString('en-IN')}</span></p>
+            <p><strong data-i18n="cbaValue10">${T.cbaValue10}</strong> <span class="float-right font-medium text-gray-800">₹ ${valueOver10Years.toLocaleString('en-IN')}</span></p>
+            <p><strong data-i18n="cbaValue20">${T.cbaValue20}</strong> <span class="float-right font-medium text-gray-800">₹ ${valueOver20Years.toLocaleString('en-IN')}</span></p>
+            <p><strong data-i18n="cbaPayback">${T.cbaPayback}</strong> <span class="float-right font-medium text-gray-800">${paybackPeriod} <span data-i18n="cbaYears">${T.cbaYears}</span></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8">
+      <h3 class="text-xl font-semibold text-gray-700 border-b pb-2 mb-3" data-i18n="recomTitle">${T.recomTitle}</h3>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 border rounded-lg">
+          <thead class="bg-gray-50"><tr class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-4 py-3" data-i18n="arStructure">${T.arStructure}</th><th class="px-4 py-3" data-i18n="arDims">${T.arDims}</th><th class="px-4 py-3" data-i18n="arVolume">${T.arVolume}</th><th class="px-4 py-3" data-i18n="arCost">${T.arCost}</th>
+          </tr></thead>
+          <tbody class="bg-white divide-y divide-gray-200 text-sm">
+            <tr><td class="px-4 py-3 font-medium" data-i18n="arPit">${T.arPit}</td><td class="px-4 py-3">${reportData.ar.pit.dims}</td><td class="px-4 py-3">${reportData.ar.pit.volume}</td><td class="px-4 py-3">₹ ${reportData.ar.pit.cost.toLocaleString('en-IN')}</td></tr>
+            <tr><td class="px-4 py-3 font-medium" data-i18n="arTrench">${T.arTrench}</td><td class="px-4 py-3">${reportData.ar.trench.dims}</td><td class="px-4 py-3">${reportData.ar.trench.volume}</td><td class="px-4 py-3">₹ ${reportData.ar.trench.cost.toLocaleString('en-IN')}</td></tr>
+            <tr><td class="px-4 py-3 font-medium" data-i18n="arShaft">${T.arShaft}</td><td class="px-4 py-3">${reportData.ar.shaft.dims}</td><td class="px-4 py-3">${reportData.ar.shaft.volume}</td><td class="px-4 py-3">₹ ${reportData.ar.shaft.cost.toLocaleString('en-IN')}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mt-8 p-6 bg-blue-50/50 rounded-xl border border-blue-200 text-gray-700">
+        <h3 class="text-2xl font-bold mb-4" data-i18n="guideTitle">${T.guideTitle}</h3>
+        <div class="grid md:grid-cols-2 gap-6 text-sm">
+            <div>
+                <h4 class="text-lg font-semibold mb-2" data-i18n="systemTitle">${T.systemTitle}</h4>
+                <p data-i18n="systemDescription">${T.systemDescription}</p>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-2" data-i18n="useTitle">${T.useTitle}</h4>
+                <ul class="list-disc list-inside space-y-1">
+                    <li data-i18n="useGroundwater">${T.useGroundwater}</li>
+                    <li data-i18n="useGardening">${T.useGardening}</li>
+                    <li data-i18n="useCleaning">${T.useCleaning}</li>
+                </ul>
+            </div>
+            <div class="md:col-span-2">
+                <h4 class="text-lg font-semibold mb-2" data-i18n="impactTitle">${T.impactTitle}</h4>
+                <ul class="list-disc list-inside space-y-1 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0">
+                    <li data-i18n="impactConservation">${T.impactConservation}</li>
+                    <li data-i18n="impactFlood">${T.impactFlood}</li>
+                    <li data-i18n="impactAquifer">${T.impactAquifer}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+  `;
+}
+
+// Initial Load
+document.addEventListener('DOMContentLoaded', () => {
+    setLanguage(savedLang);
+});
+</script>
+
+<script src="https://cdn.botpress.cloud/webchat/v3.2/inject.js" defer></script>
+<script src="https://files.bpcontent.cloud/2025/09/13/17/20250913170131-377CJBW7.js" defer></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('Service Worker registered.', reg))
+        .catch(err => console.log('Service Worker registration failed:', err));
+    });
+  }
+</script>
+</body>
+</html>
